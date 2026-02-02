@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Pedidos | Gestión Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+        }
+        .table-custom th {
+            background-color: #f8f9fa;
+            color: #764ba2;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .table-custom tr:hover td {
+            background-color: rgba(118, 75, 162, 0.05);
+        }
+        .table-custom td {
+            vertical-align: middle;
+        }
+        .badge-category {
+            background-color: #e2e6ea;
+            color: #495057;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .total-amount {
+            font-weight: bold;
+            color: #198754; 
+        }
+        .btn-back {
+            background: white;
+            color: #764ba2;
+            border: 2px solid #764ba2;
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-back:hover { background: #764ba2; color: white; }
+        .btn-search { background: #764ba2; color: white; border: none; border-radius: 50px; padding: 6px 20px; transition: all 0.3s; }
+        .btn-search:hover { background: #5a3780; color: white; }
+        
+        /* Botón rojo de eliminar selección */
+        .btn-danger-custom {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-danger-custom:hover { background-color: #bb2d3b; transform: translateY(-1px); }
+        
+        /* Checkbox personalizado grande */
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            border: 2px solid #764ba2;
+            cursor: pointer;
+        }
+        .form-check-input:checked {
+            background-color: #764ba2;
+            border-color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="glass-card p-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="m-0 text-secondary">📋 Listado de Pedidos</h3>
+                <a th:href="@{/nuevo-pedido}" class="btn-back">
+                    &larr; Nuevo Pedido
+                </a>
+            </div>
+
+            <div class="card bg-light border-0 mb-4 p-3 rounded-3">
+                <form th:action="@{/ver-pedidos}" method="get">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-auto">
+                            <label for="filtroCategoria" class="col-form-label fw-bold text-secondary">
+                                <i class="bi bi-funnel"></i> Filtrar:
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <select name="categoria" id="filtroCategoria" class="form-select border-secondary text-secondary">
+                                <option value="">Todas las categorías</option>
+                                <option value="Electrónica" th:selected="${categoriaSeleccionada == 'Electrónica'}">Electrónica</option>
+                                <option value="Hogar" th:selected="${categoriaSeleccionada == 'Hogar'}">Hogar</option>
+                                <option value="Ropa" th:selected="${categoriaSeleccionada == 'Ropa'}">Ropa</option>
+                                <option value="Juguetes" th:selected="${categoriaSeleccionada == 'Juguetes'}">Juguetes</option>
+                                <option value="Alimentación" th:selected="${categoriaSeleccionada == 'Alimentación'}">Alimentación</option>
+                                <option value="Otros" th:selected="${categoriaSeleccionada == 'Otros'}">Otros</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-search">🔍 Buscar</button>
+                        </div>
+                        <div class="col-auto" th:if="${categoriaSeleccionada != null and !categoriaSeleccionada.isEmpty()}">
+                            <a th:href="@{/ver-pedidos}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">❌ Quitar Filtro</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <form th:action="@{/eliminar-varios}" method="post" id="formEliminar">
+                
+                <div class="mb-3 d-flex align-items-center gap-2" th:if="${!#lists.isEmpty(listaPedidos)}">
+                    <i class="bi bi-arrow-return-right text-muted"></i>
+                    <button type="submit" class="btn btn-danger-custom" onclick="return confirm('¿Estás seguro de que quieres eliminar los pedidos seleccionados?');">
+                        <i class="bi bi-trash"></i> Eliminar Seleccionados
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">
+                                    <input type="checkbox" class="form-check-input" id="checkAll">
+                                </th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Cant.</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Acciones</th> </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pedido : ${listaPedidos}">
+                                <td>
+                                    <input type="checkbox" name="ids" class="form-check-input check-item" th:value="${pedido.id_pedido}">
+                                </td>
+                                <td th:text="${pedido.producto}" class="fw-bold text-dark">Laptop</td>
+                                <td><span class="badge-category" th:text="${pedido.categoria}">Electrónica</span></td>
+                                <td th:text="${pedido.precioUnitario} + ' €'">1200.0 €</td>
+                                <td th:text="${pedido.cantidad}">1</td>
+                                <td th:text="${pedido.fechaPedido}">2026-01-30</td>
+                                <td class="total-amount" th:text="${pedido.importeTotal} + ' €'">1200.0 €</td>
+                                
+                                <td>
+                                    <a th:href="@{/eliminar/{id}(id=${pedido.id_pedido})}" 
+                                       class="btn btn-outline-danger btn-sm rounded-circle" 
+                                       title="Eliminar este pedido"
+                                       onclick="return confirm('¿Borrar este pedido permanentemente?');">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            
+                            <tr th:if="${#lists.isEmpty(listaPedidos)}">
+                                <td colspan="9" class="text-center py-5 text-muted">
+                                    <h4>📭 Sin resultados</h4>
+                                    <p>No hay pedidos registrados.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            
+            <div class="mt-3 text-end text-muted small">
+                Mostrando <span th:text="${#lists.size(listaPedidos)}">0</span> registros
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('checkAll').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.check-item');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+    </script>
+</body>
+</html>
