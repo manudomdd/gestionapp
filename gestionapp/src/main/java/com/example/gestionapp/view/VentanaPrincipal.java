@@ -60,6 +60,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu1.add(jMenuItem3);
 
         jMenuItem4.setText("Salir");
+        jMenuItem4.addActionListener(this::jMenuItem4ActionPerformed);
         jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
@@ -130,6 +131,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+
+        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                this, 
+                "¿Estás seguro de que quieres salir de la aplicación?", 
+                "Cerrar Aplicación", 
+                javax.swing.JOptionPane.YES_NO_OPTION, 
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
+
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void initFunctions() {
         centerScreen(); 

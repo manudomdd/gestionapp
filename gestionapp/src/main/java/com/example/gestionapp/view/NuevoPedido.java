@@ -3,18 +3,23 @@ package com.example.gestionapp.view;
 import com.example.gestionapp.model.Pedido;
 import com.example.gestionapp.service.PedidoService;
 import java.util.Date;
+import org.netbeans.validation.api.AbstractValidator;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.ui.ValidationGroup;
 
 public class NuevoPedido extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NuevoPedido.class.getName());
     private VentanaPrincipal ppl; 
     private PedidoService pedidoService; 
+    private ValidationGroup group; 
 
     public NuevoPedido(java.awt.Frame parent, boolean modal, PedidoService service) {
         super(parent, modal);
         initComponents();
         ppl = (VentanaPrincipal) parent; 
         this.pedidoService = service; 
+        validations(); 
     }
 
     @SuppressWarnings("unchecked")
@@ -33,6 +38,7 @@ public class NuevoPedido extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jSpinner1 = new javax.swing.JSpinner();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        validationPanel1 = new org.netbeans.validation.api.ui.swing.ValidationPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -50,6 +56,7 @@ public class NuevoPedido extends javax.swing.JDialog {
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton2.setText("Cancelar");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Electrónica", "Hogar", "Ropa", "Juguetes", "Alimentación", "Otros" }));
 
@@ -58,32 +65,38 @@ public class NuevoPedido extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5))
-                .addGap(101, 101, 101)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField2)
-                    .addComponent(jSpinner1)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1))
-                .addContainerGap(120, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(46, 46, 46)
-                .addComponent(jButton2)
-                .addGap(176, 176, 176))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(jButton1)
+                        .addGap(46, 46, 46)
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(102, 102, 102)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(validationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(101, 101, 101)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField2)
+                                    .addComponent(jSpinner1)
+                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(62, 62, 62)
+                .addGap(29, 29, 29)
+                .addComponent(validationPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -103,11 +116,11 @@ public class NuevoPedido extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addGap(77, 77, 77))
+                .addGap(49, 49, 49))
         );
 
         pack();
@@ -158,10 +171,58 @@ public class NuevoPedido extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Error: Precio o Cantidad no válidos.");
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage());
-            e.printStackTrace(); // Muestra el error en la consola para depurar
+            e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+ 
+    private void validations() {
+        group = validationPanel1.getValidationGroup();
+
+        group.add(jTextField1, new AbstractValidator<String>(String.class) {
+            @Override
+            public void validate(Problems prblms, String compName, String model) {              
+                if (model.isEmpty()) {
+                    prblms.add("El nombre es obligatorio.");
+                } 
+                else if (!model.matches("^[a-zA-Z\\s]*$")) { 
+                    prblms.add("El nombre solo puede contener letras.");
+                }
+            }
+        });
+
+        group.add(jTextField2, new AbstractValidator<String>(String.class) {
+            @Override
+            public void validate(Problems prblms, String compName, String model) {
+                
+                if (model.isEmpty()) {
+                    prblms.add("El precio es obligatorio");
+                } 
+                else if (!model.matches("^\\d+(\\.\\d+)?$")) {
+                    prblms.add("El precio debe ser un número válido (ej. 10.5)");
+                }
+            }
+        });
+        
+        javax.swing.JComponent editorFecha = (javax.swing.JComponent) jDateChooser1.getDateEditor().getUiComponent();
+
+        group.add(editorFecha, new AbstractValidator<String>(String.class) {
+            @Override
+            public void validate(Problems problems, String compName, String texto) {
+
+                if (texto == null || texto.trim().isEmpty()) {
+                    problems.add("La fecha es obligatoria.");
+                } 
+                else if (jDateChooser1.getDate() == null) {
+                    problems.add("El formato de fecha no es válido.");
+                }
+            }
+        });
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -209,5 +270,6 @@ public class NuevoPedido extends javax.swing.JDialog {
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private org.netbeans.validation.api.ui.swing.ValidationPanel validationPanel1;
     // End of variables declaration//GEN-END:variables
 }
