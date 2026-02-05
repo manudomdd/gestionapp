@@ -45,14 +45,12 @@ public class PedidoWebController {
         return "listado_pedidos"; 
     }
     
-    // 1. Eliminar individual (botón de la fila)
     @GetMapping("/eliminar/{id}")
     public String eliminarPedido(@PathVariable Long id) {
         pedidoService.eliminar(id);
         return "redirect:/ver-pedidos";
     }
 
-    // 2. Eliminar masivo (checkboxes)
     @PostMapping("/eliminar-varios")
     public String eliminarVarios(@RequestParam(required = false) List<Long> ids) {
         if (ids != null && !ids.isEmpty()) {
