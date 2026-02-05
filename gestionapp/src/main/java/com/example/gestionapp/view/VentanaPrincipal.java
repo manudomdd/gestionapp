@@ -1,11 +1,16 @@
 package com.example.gestionapp.view;
 
+import com.example.gestionapp.model.Pedido;
 import com.example.gestionapp.service.PedidoService;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
     private final PedidoService pedidoService;
+    public final String[] TABLE_HEADERS = {"ID", "Producto", "Categoria", "Precio unitario", "Cantidad", "Fecha"}; 
+    public DefaultTableModel model; 
 
     public VentanaPrincipal(PedidoService pedidoService) {
         this.pedidoService = pedidoService; 
@@ -77,18 +82,40 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        NuevoPedido nuevoPedido = new NuevoPedido(this, true); 
+        NuevoPedido nuevoPedido = new NuevoPedido(this, true, this.pedidoService); 
         nuevoPedido.setLocationRelativeTo(null);
         nuevoPedido.setVisible(true); 
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void initFunctions() {
         centerScreen(); 
+        initTable(); 
+        loadTable(); 
     }
     
     private void centerScreen() {
         this.setLocationRelativeTo(null);
     }
+    
+    private void initTable() {
+        model = new DefaultTableModel(TABLE_HEADERS, 6); 
+        jTable1.setModel(model); 
+    }
+    
+    public void loadTable() {
+        List<Pedido> lista = pedidoService.listarTodos();
+        model.setRowCount(0);
+        
+        for (Pedido p : lista) {
+            Object[] row = {p.getId_pedido(), p.getProducto(), p.getCategoria(), p.getPrecioUnitario(), p.getCantidad(), p.getFechaPedido()}; 
+            model.addRow(row);
+        }
+    }
+    
+    public void addToTable(Object[] row) {
+        model.addRow(row);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
