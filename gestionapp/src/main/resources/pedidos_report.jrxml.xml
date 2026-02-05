@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="ReportePedidos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4fbe2b1a-8c5e-45d6-8485-685292d19488">
+    
+    <import value="java.time.format.DateTimeFormatter"/>
+
+    <parameter name="fechaInicio" class="java.util.Date"/>
+    <parameter name="fechaFin" class="java.util.Date"/>
+    <parameter name="categoriaFiltro" class="java.lang.String"/>
+
+    <field name="producto" class="java.lang.String"/>
+    <field name="categoria" class="java.lang.String"/>
+    <field name="precioUnitario" class="java.lang.Double"/>
+    <field name="cantidad" class="java.lang.Integer"/>
+    <field name="fechaPedido" class="java.time.LocalDate"/>
+
+    <variable name="importeFila" class="java.lang.Double">
+        <variableExpression><![CDATA[$F{precioUnitario} * $F{cantidad}]]></variableExpression>
+    </variable>
+
+    <variable name="totalCategoria" class="java.lang.Double" resetType="Group" resetGroup="GrupoCategoria" calculation="Sum">
+        <variableExpression><![CDATA[$F{precioUnitario} * $F{cantidad}]]></variableExpression>
+    </variable>
+
+    <variable name="totalGeneral" class="java.lang.Double" calculation="Sum">
+        <variableExpression><![CDATA[$F{precioUnitario} * $F{cantidad}]]></variableExpression>
+    </variable>
+
+    <group name="GrupoCategoria">
+        <groupExpression><![CDATA[$F{categoria}]]></groupExpression>
+        <groupHeader>
+            <band height="30">
+                <textField>
+                    <reportElement mode="Opaque" x="0" y="0" width="555" height="30" backcolor="#E6E6E6" uuid="a1b2c3d4-e5f6-4890-a234-567890abcdef"/>
+                    <textElement verticalAlignment="Middle">
+                        <font size="14" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA["Categoría: " + $F{categoria}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="30">
+                <textField>
+                    <reportElement x="350" y="0" width="205" height="30" uuid="f1e2d3c4-b5a6-4780-a234-567890abcdef"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle">
+                        <font isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA["Total " + $F{categoria} + ": " + String.format("%.2f", $V{totalCategoria}) + " €"]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <title>
+        <band height="79" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="40" uuid="1a2b3c4d-5e6f-4a8b-9c0d-1e2f3a4b5c6d"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="22" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Reporte de Pedidos]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="0" y="40" width="555" height="20" uuid="550e8400-e29b-41d4-a716-446655440000"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA["Generado el: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="30" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="150" height="30" uuid="6c84c1f9-8d7a-42d4-9f2e-1b3c4d5e6f7a"/>
+                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Producto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="150" y="0" width="80" height="30" uuid="7d95d2e0-9e8b-43e5-af3f-2c4d5e6f7a8b"/>
+                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Fecha]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="230" y="0" width="100" height="30" uuid="8e06e3f1-af9c-44f6-bf4a-3d5e6f7a8b9c"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Precio Unit.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="330" y="0" width="70" height="30" uuid="9f17f4a2-ba0d-45a7-ca5b-4e6f7a8b9c0d"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Cant.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="155" height="30" uuid="a028a5b3-ca1e-46b8-da6c-5f7a8a9b0c1e"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Importe]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="150" height="20" uuid="b139a6b4-da2f-47a9-ea7b-6a8b9b0c1d2e"/>
+                <textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+            </textField>
+            
+            <textField>
+                <reportElement x="150" y="0" width="80" height="20" uuid="c240a7b5-ea3a-48a0-fa8b-7a9b0c1d2e3f"/>
+                <textFieldExpression><![CDATA[$F{fechaPedido}.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))]]></textFieldExpression>
+            </textField>
+
+            <textField pattern="#,##0.00 €">
+                <reportElement x="230" y="0" width="100" height="20" uuid="d351a8b6-fa4b-49a1-aa91-8a0b1d2e3f4a"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{precioUnitario}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="330" y="0" width="70" height="20" uuid="e462a9b7-aa5b-50a2-ba0a-9a1b2e3f4a5b"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00 €">
+                <reportElement x="400" y="0" width="155" height="20" uuid="f573a0b8-aa6b-51a3-1a1a-0a2b3f4a5b6c"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{importeFila}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="300" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="10" width="555" height="1" uuid="0684a1b9-1a7a-52a4-1a2a-1a3b4a5b6c7d"/>
+            </line>
+            
+            <textField>
+                <reportElement x="300" y="20" width="255" height="30" forecolor="#FF0000" uuid="1795a2b0-1a81-53a5-aa3a-2a4b5a6b7c8d"/>
+                <textElement textAlignment="Right">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["GRAN TOTAL: " + String.format("%.2f", $V{totalGeneral}) + " €"]]></textFieldExpression>
+            </textField>
+
+            <pieChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="0" y="60" width="555" height="230" uuid="2806a3b1-aa9a-54a6-1a4a-3a5b6a7b8c9d"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Ventas por Categoría"]]></titleExpression>
+                    </chartTitle>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <pieDataset>
+                    <dataset incrementType="Group" incrementGroup="GrupoCategoria"/>
+                    
+                    <keyExpression><![CDATA[$F{categoria}]]></keyExpression>
+                    <valueExpression><![CDATA[$V{totalCategoria}]]></valueExpression>
+                    <labelExpression><![CDATA[$F{categoria} + ": " + String.format("%.0f", $V{totalCategoria}) + "€"]]></labelExpression>
+                </pieDataset>
+                <piePlot>
+                    <plot/>
+                    <itemLabel/>
+                </piePlot>
+            </pieChart>
+        </band>
+    </summary>
+
+</jasperReport>
