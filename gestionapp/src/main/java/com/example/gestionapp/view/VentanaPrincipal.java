@@ -53,6 +53,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setText("Ver pedidos");
+        jMenuItem2.addActionListener(this::jMenuItem2ActionPerformed);
         jMenu1.add(jMenuItem2);
 
         jMenuItem3.setText("Generar informe");
@@ -86,6 +87,49 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoPedido.setLocationRelativeTo(null);
         nuevoPedido.setVisible(true); 
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+
+        String[] opciones = {"Todos", "Electronica", "Hogar", "Ropa", "Juguetes", "Alimentacion", "Otros"};
+
+        String seleccion = (String) javax.swing.JOptionPane.showInputDialog(
+                this,         
+                "Selecciona una categoría para filtrar:", 
+                "Filtrar Pedidos",             
+                javax.swing.JOptionPane.QUESTION_MESSAGE, 
+                null,                            
+                opciones,                        
+                opciones[0]);                    
+
+        if (seleccion != null) {
+
+            List<Pedido> listaFiltrada;
+
+            if (seleccion.equals("Todas")) {
+                listaFiltrada = pedidoService.listarTodos();
+            } else {
+                listaFiltrada = pedidoService.listarPorCategoria(seleccion);
+            }
+
+            model.setRowCount(0);
+
+            if (listaFiltrada.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "No se encontraron pedidos en esta categoría.");
+            } else {
+                for (Pedido p : listaFiltrada) {
+                    Object[] row = {
+                        p.getId_pedido(),
+                        p.getProducto(),
+                        p.getCategoria(),
+                        p.getPrecioUnitario(),
+                        p.getCantidad(),
+                        p.getFechaPedido()
+                    };
+                    model.addRow(row);
+                }
+            }
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void initFunctions() {
         centerScreen(); 
