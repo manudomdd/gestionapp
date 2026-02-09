@@ -117,8 +117,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
             List<Pedido> listaFiltrada;
 
-            if (seleccion.equals("Todas")) {
+            if (seleccion.equals("Todos")) {
                 listaFiltrada = pedidoService.listarTodos();
+                for (Pedido p : listaFiltrada) {
+                    Object[] row = {
+                        p.getId_pedido(),
+                        p.getProducto(),
+                        p.getCategoria(),
+                        p.getPrecioUnitario(),
+                        p.getCantidad(),
+                        p.getFechaPedido()
+                    };
+                    model.addRow(row);
+                }
             } else {
                 listaFiltrada = pedidoService.listarPorCategoria(seleccion);
             }
