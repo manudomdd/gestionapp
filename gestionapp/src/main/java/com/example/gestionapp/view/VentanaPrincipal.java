@@ -114,28 +114,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 opciones[0]);                    
 
         if (seleccion != null) {
-
             List<Pedido> listaFiltrada;
 
+            // 1. Obtener la lista según la selección
             if (seleccion.equals("Todos")) {
                 listaFiltrada = pedidoService.listarTodos();
-                for (Pedido p : listaFiltrada) {
-                    Object[] row = {
-                        p.getId_pedido(),
-                        p.getProducto(),
-                        p.getCategoria(),
-                        p.getPrecioUnitario(),
-                        p.getCantidad(),
-                        p.getFechaPedido()
-                    };
-                    model.addRow(row);
-                }
             } else {
                 listaFiltrada = pedidoService.listarPorCategoria(seleccion);
             }
 
+            // 2. Limpiar la tabla ANTES de cargar nuevos datos
             model.setRowCount(0);
 
+            // 3. Validar y llenar
             if (listaFiltrada.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "No se encontraron pedidos en esta categoría.");
             } else {
@@ -144,7 +135,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         p.getId_pedido(),
                         p.getProducto(),
                         p.getCategoria(),
-                        p.getPrecioUnitario(),
+                        p.getPrecioUnitario() + "€",
                         p.getCantidad(),
                         p.getFechaPedido()
                     };
@@ -231,9 +222,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public void loadTable() {
         List<Pedido> lista = pedidoService.listarTodos();
         model.setRowCount(0);
-        
+
         for (Pedido p : lista) {
-            Object[] row = {p.getId_pedido(), p.getProducto(), p.getCategoria(), p.getPrecioUnitario(), p.getCantidad(), p.getFechaPedido()}; 
+            Object[] row = {
+                p.getId_pedido(), 
+                p.getProducto(), 
+                p.getCategoria(), 
+                p.getPrecioUnitario() + "€",
+                p.getCantidad(), 
+                p.getFechaPedido()
+            }; 
             model.addRow(row);
         }
     }
