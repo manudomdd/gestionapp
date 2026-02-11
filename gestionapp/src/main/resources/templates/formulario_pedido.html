@@ -5,86 +5,393 @@
     <title>Nuevo Pedido | Gestión Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0F172A;
+            --secondary: #1E293B;
+            --accent: #3B82F6;
+            --accent-hover: #2563EB;
+            --success: #10B981;
+            --danger: #EF4444;
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --bg-light: #F8FAFC;
+            --border: #E2E8F0;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            font-family: 'DM Sans', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* Elementos decorativos de fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 40px 32px;
+            position: relative;
             overflow: hidden;
         }
-        .card-header-custom {
-            background: transparent;
-            border-bottom: 2px solid #f0f0f0;
-            padding: 25px;
-            text-align: center;
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
         }
-        /* Estilos para errores de validación */
+
+        .card-header-custom h3 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            color: white;
+            margin: 0;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header-custom .icon-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .card-header-custom p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 8px 0 0 0;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .card-body {
+            padding: 40px 32px;
+        }
+
+        .form-floating {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            padding: 1rem 0.75rem;
+            height: calc(3.5rem + 2px);
+            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .form-floating > .form-control:focus,
+        .form-floating > .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .form-floating > label {
+            color: var(--text-secondary);
+            padding: 1rem 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label,
+        .form-floating > .form-select:focus ~ label,
+        .form-floating > .form-select:not([value=""]) ~ label {
+            color: var(--accent);
+        }
+
+        .is-invalid {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+            background-image: none !important;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
         .text-error {
-            color: #dc3545;
-            font-size: 0.85em;
-            margin-top: 5px;
-            font-weight: 600;
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-weight: 500;
             display: flex;
             align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.3s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .text-error::before {
-            content: "⚠️ ";
-            margin-right: 4px;
+            content: "⚠";
+            font-size: 1rem;
         }
-        .is-invalid {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-            background-image: none !important; /* Quitamos el icono por defecto de bootstrap para usar el nuestro */
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-family: 'DM Sans', sans-serif;
         }
-        
-        /* Botones */
-        .btn-gradient { background: linear-gradient(to right, #667eea, #764ba2); border: none; color: white; padding: 12px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease; }
-        .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); color: white; }
-        .btn-outline-custom { border: 2px solid #764ba2; color: #764ba2; padding: 12px 30px; border-radius: 50px; font-weight: 600; background: transparent; transition: all 0.3s ease; text-decoration: none; display: block; text-align: center; }
-        .btn-outline-custom:hover { background: #764ba2; color: white; }
-        .form-floating > label { color: #888; }
-        .alert-floating { position: absolute; top: 20px; right: 20px; z-index: 999; }
+
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-gradient:hover::before {
+            left: 100%;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .btn-gradient:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-outline-custom {
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-size: 1.05rem;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--bg-light);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .alert-floating {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            min-width: 320px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            border-left: 4px solid #047857;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        /* Grid de dos columnas responsive */
+        .row-custom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .row-custom {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header-custom h3 {
+                font-size: 1.6rem;
+            }
+
+            .card-body {
+                padding: 32px 24px;
+            }
+
+            .alert-floating {
+                right: 16px;
+                left: 16px;
+                min-width: auto;
+            }
+        }
+
+        /* Efectos de carga para inputs */
+        input:not(:placeholder-shown),
+        select:valid {
+            animation: inputFill 0.3s ease-out;
+        }
+
+        @keyframes inputFill {
+            from { background: rgba(59, 130, 246, 0.05); }
+            to { background: white; }
+        }
     </style>
 </head>
 <body>
 
-    <div th:if="${param.exito}" class="alert alert-success alert-dismissible fade show alert-floating shadow" role="alert">
+    <div th:if="${param.exito}" class="alert alert-success alert-dismissible fade show alert-floating" role="alert">
         <strong>¡Éxito!</strong> El pedido se ha guardado correctamente.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <div class="card glass-card p-4">
+                <div class="card glass-card">
                     <div class="card-header-custom">
-                        <h3>📦 Registrar Pedido</h3>
-                        <p class="text-muted small mt-2">Introduce los detalles de la venta</p>
+                        <div class="icon-badge">📦</div>
+                        <h3>Registrar Pedido</h3>
+                        <p>Introduce los detalles de la venta</p>
                     </div>
                     
                     <div class="card-body">
                         <form th:action="@{/guardar-pedido}" th:object="${pedido}" method="post" novalidate>
                             
-                            <div class="form-floating mb-3">
+                            <div class="form-floating">
                                 <input type="text" class="form-control" th:classappend="${#fields.hasErrors('producto')} ? 'is-invalid'" id="producto" th:field="*{producto}" placeholder="Producto" required>
                                 <label for="producto">Producto</label>
                                 <div class="text-error" th:if="${#fields.hasErrors('producto')}" th:errors="*{producto}">Error</div>
                             </div>
 
-                            <div class="form-floating mb-3">
+                            <div class="form-floating">
                                 <select class="form-select" th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'" id="categoria" th:field="*{categoria}" required>
                                     <option value="" selected>Selecciona una opción...</option>
                                     <option value="Electrónica">Electrónica</option>
@@ -98,37 +405,33 @@
                                 <div class="text-error" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}">Error</div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="number" step="0.01" min="0.01" class="form-control" th:classappend="${#fields.hasErrors('precioUnitario')} ? 'is-invalid'" id="precio" th:field="*{precioUnitario}" placeholder="0.00" required>
-                                        <label for="precio">Precio Unitario (€)</label>
-                                        <div class="text-error" th:if="${#fields.hasErrors('precioUnitario')}" th:errors="*{precioUnitario}">Error</div>
-                                    </div>
+                            <div class="row-custom">
+                                <div class="form-floating">
+                                    <input type="number" step="0.01" min="0.01" class="form-control" th:classappend="${#fields.hasErrors('precioUnitario')} ? 'is-invalid'" id="precio" th:field="*{precioUnitario}" placeholder="0.00" required>
+                                    <label for="precio">Precio Unitario (€)</label>
+                                    <div class="text-error" th:if="${#fields.hasErrors('precioUnitario')}" th:errors="*{precioUnitario}">Error</div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="number" min="1" class="form-control" th:classappend="${#fields.hasErrors('cantidad')} ? 'is-invalid'" id="cantidad" th:field="*{cantidad}" placeholder="0" required>
-                                        <label for="cantidad">Cantidad</label>
-                                        <div class="text-error" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}">Error</div>
-                                    </div>
+                                <div class="form-floating">
+                                    <input type="number" min="1" class="form-control" th:classappend="${#fields.hasErrors('cantidad')} ? 'is-invalid'" id="cantidad" th:field="*{cantidad}" placeholder="0" required>
+                                    <label for="cantidad">Cantidad</label>
+                                    <div class="text-error" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}">Error</div>
                                 </div>
                             </div>
 
-                            <div class="form-floating mb-4">
+                            <div class="form-floating">
                                 <input type="date" class="form-control" th:classappend="${#fields.hasErrors('fechaPedido')} ? 'is-invalid'" id="fecha" th:field="*{fechaPedido}" required>
                                 <label for="fecha">Fecha del Pedido</label>
                                 <div class="text-error" th:if="${#fields.hasErrors('fechaPedido')}" th:errors="*{fechaPedido}">Error</div>
                             </div>
 
                             <div class="d-grid gap-3 mt-4">
-                                <button type="submit" class="btn btn-gradient btn-lg">Guardar Pedido</button>
+                                <button type="submit" class="btn btn-gradient">Guardar Pedido</button>
                                 <a th:href="@{/ver-pedidos}" class="btn btn-outline-custom">Ver Listado de Pedidos</a>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="text-center mt-3 text-white-50">
+                <div class="footer-text">
                     <small>© 2026 Gestión App Proyecto Final</small>
                 </div>
             </div>

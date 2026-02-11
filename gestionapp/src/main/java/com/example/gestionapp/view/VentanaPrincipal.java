@@ -172,7 +172,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         try {
-            // 1. Obtener los datos
             java.util.List<Pedido> listaPedidos = pedidoService.listarTodos();
 
             if (listaPedidos.isEmpty()) {
@@ -180,36 +179,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 return;
             }
 
-            // 2. [CRUCIAL] ORDENAR LA LISTA POR CATEGORÍA
-            // JasperReports necesita los datos ordenados para agruparlos bien en el gráfico
-            // Si no haces esto, te dará el error "Key duplicated in pie dataset"
             listaPedidos.sort((p1, p2) -> p1.getCategoria().compareToIgnoreCase(p2.getCategoria()));
 
-            // 3. Cargar el archivo .jrxml
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/pedidos_report.jrxml.xml");
             if (reporteStream == null) {
                 javax.swing.JOptionPane.showMessageDialog(this, "No se encuentra el archivo pedidos_report.jrxml");
                 return;
             }
 
-            // 4. Compilar
             net.sf.jasperreports.engine.JasperReport reporteCompilado = 
                 net.sf.jasperreports.engine.JasperCompileManager.compileReport(reporteStream);
 
-            // 5. Parámetros
             java.util.Map<String, Object> parametros = new java.util.HashMap<>();
             parametros.put("fechaInicio", new java.util.Date());
             parametros.put("fechaFin", new java.util.Date());
             parametros.put("categoriaFiltro", "Todas");
 
-            // 6. Llenar reporte
             net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource = 
                 new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(listaPedidos);
             
             net.sf.jasperreports.engine.JasperPrint jasperPrint = 
                 net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteCompilado, parametros, dataSource);
 
-            // 7. Mostrar (false = no cerrar la app al salir del reporte)
             net.sf.jasperreports.view.JasperViewer viewer = 
                 new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
             
